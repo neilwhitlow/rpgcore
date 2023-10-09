@@ -3,7 +3,9 @@
 package dice
 
 import (
+	"fmt"
 	"math/rand"
+	"sort"
 	"time"
 
 	"github.com/seehuhn/mt19937"
@@ -32,10 +34,12 @@ type DiceRoller struct {
 // 64bit Mersenne Twister pseudo random number generator
 // from the package https://github.com/seehuhn/mt19937.
 // The roller is seeded from the system time nanoseconds
-func NewDiceRoller() *DiceRoller {
-	dr := &DiceRoller{}
+func NewDiceRoller() DiceRoller {
+	dr := DiceRoller{}
 	dr.rng = rand.New(mt19937.New())
-	dr.rng.Seed(time.Now().UnixNano())
+	dummy := time.Now().UnixNano()
+	dr.rng.Seed(dummy)
+
 	return dr
 }
 
@@ -57,6 +61,29 @@ func (dr *DiceRoller) RollMany(numberOfDice int, dt DieType) int {
 		total += (dr.rng.Intn(int(dt)-1) + 1)
 	}
 	return total
+}
+
+// RollAndDropLowest - a convenience function similar to RollMany
+// but automatically supports the practice found in many rulesets
+// where the lowest roll is dropped to help protect against
+// outrageously low results.  For example: 4d6 minus lowest die
+// instead of a straight 3d6 roll for character attributes.
+func (dr *DiceRoller) RollAndDropLowest(numberOfDice int, dt DieType) (int, error) {
+	var total int = 0
+	if numberOfDice <= 1 {
+		return total, fmt.Errorf("NumberOfDice: %d, must be greater than one to drop lowest roll.", numberOfDice)
+	}
+	rolls := make([]int, numberOfDice)
+	for i := 0; i < numberOfDice; i++ {
+		rolls[i] = (dr.rng.Intn(int(dt)) + 1)
+	}
+
+	sort.Ints(rolls)
+
+	for _, v := range rolls[1:] {
+		total += v
+	}
+	return total, nil
 }
 
 type RollChance struct {

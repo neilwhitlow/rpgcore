@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Melee Attack Mod",
+    "abbreviation": "MELEEATTACK",
+    "primeModKey": "STR"
+  },
+  {
+    "name": "Ranged Attack Mod",
+    "abbreviation": "RANGEDATTACK",
+    "primeModKey": "DEX"
+  },
+  {
+    "name": "Armor Class",
+    "abbreviation": "ARMORCLASS",
+    "primeModKey": "DEX"
+  },
+  {
+    "name": "Will",
+    "abbreviation": "WILL",
+    "primeModKey": "MFOR",
+    "baseInitialScore": 10
+  },
+   {
+    "name": "Hit Points",
+    "abbreviation": "HP",
+    "primeScoreKey": "CON",
+    "primeScoreMultiplier": 6
+  },
+  {
+    "name": "Physical Fortitude",
+    "abbreviation": "PFOR",
+    "primeModKey": "CON",
+    "baseInitialScore": 10
+  },   
+  {
+    "name": "Move Silently",
+    "abbreviation": "MOVESILENTLY",
+    "primeModKey": "DEX"
+  },       
+  {
+    "name": "Hide",
+    "abbreviation": "HIDE",
+    "primeModKey": "INT"
+  }, 
+  {
+    "name": "Notice",
+    "abbreviation": "NOTICE",
+    "primeModKey": "INT",
+    "primeScoreKey": "SEN"
+  },      
+  {
+    "name": "Pre-Apoc Tech",
+    "abbreviation": "TECH",
+    "primeModKey": "INT"
+  }      
+]

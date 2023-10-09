@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/neilwhitlow/rpgcore/pkg/units"
+	"github.com/neilwhitlow/rpgcore/units"
 )
 
 type float64TestDefinition struct {
