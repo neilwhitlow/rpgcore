@@ -17,4 +17,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/neilwhitlow/collections v0.0.0-unpublished => /home/neil/git/collections/
+replace github.com/neilwhitlow/collections v0.0.0-unpublished => /home/neil/git/golang/collections/
