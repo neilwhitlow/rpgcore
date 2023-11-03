@@ -20,6 +20,10 @@
             "abbreviation": "MFOR"
         },
         {
+            "name": "Charisma",
+            "abbreviation": "CHA"
+        },        
+        {
             "name": "Sensitivity",
             "abbreviation": "SEN"
         }

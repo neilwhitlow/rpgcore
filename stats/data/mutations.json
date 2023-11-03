@@ -1,0 +1,221 @@
+{
+    "maxPhysicalRoll": 35,
+    "maxPsychicRoll": 18,
+    "physicalMutations": [
+        {
+            "name": "Enhanced Strength",
+            "rollChance": {
+                "from": 1,
+                "to": 5
+            },
+            "adjustments": [
+                {
+                    "type": "PrimeAbility",
+                    "abilityKey": "STR",
+                    "initialMod": 6,
+                    "minimumMod": 2
+                }
+            ]
+        },
+        {
+            "name": "Enhanced Dexterity",
+            "rollChance": {
+                "from": 6,
+                "to": 10
+            },
+            "adjustments": [
+                {
+                    "type": "PrimeAbility",
+                    "abilityKey": "DEX",
+                    "initialMod": 6,
+                    "minimumMod": 2
+                }
+            ]
+        },
+        {
+            "name": "Enhanced Constitution",
+            "rollChance": {
+                "from": 11,
+                "to": 15
+            },
+            "adjustments": [
+                {
+                    "type": "PrimeAbility",
+                    "abilityKey": "CON",
+                    "initialMod": 6,
+                    "minimumMod": 2
+                }
+            ]
+        },
+        {
+            "name": "Enhanced Sight",
+            "rollChance": {
+                "from": 16,
+                "to": 17
+            },
+            "adjustments": [
+                {
+                    "type": "PrimeAbility",
+                    "abilityKey": "SEN",
+                    "initialMod": 3,
+                    "minimumMod": 3
+                }
+            ]
+        },
+        {
+            "name": "Enhanced Hearing",
+            "rollChance": {
+                "from": 18,
+                "to": 19
+            },
+            "adjustments": [
+                {
+                    "type": "PrimeAbility",
+                    "abilityKey": "SEN",
+                    "initialMod": 3,
+                    "minimumMod": 3
+                }
+            ]
+        },
+        {
+            "name": "Enhanced Smell",
+            "rollChance": {
+                "from": 20,
+                "to": 21
+            },
+            "adjustments": [
+                {
+                    "type": "PrimeAbility",
+                    "abilityKey": "SEN",
+                    "initialMod": 3,
+                    "minimumMod": 3
+                }
+            ]
+        },
+        {
+            "name": "Enhanced Touch",
+            "rollChance": {
+                "from": 22,
+                "to": 23
+            }
+        },
+        {
+            "name": "Enhanced Smell",
+            "rollChance": {
+                "from": 24,
+                "to": 25
+            }
+        },
+        {
+            "name": "Enhanced Accuracy",
+            "rollChance": {
+                "from": 26,
+                "to": 27
+            },
+            "adjustments": [
+                {
+                    "type": "CalculatedAbilityBonus",
+                    "abilityKey": "RANGEDATTACK",
+                    "scoreBonus": 4
+                }
+            ]
+        },
+        {
+            "name": "Enhanced Equilibrium",
+            "rollChance": {
+                "from": 28,
+                "to": 29
+            }
+        },
+        {
+            "name": "Gills",
+            "rollChance": {
+                "from": 30,
+                "to": 31
+            },
+            "adjustments": [
+                {
+                    "type": "CalculatedAbilityBonus",
+                    "abilityKey": "HUAPPEAR",
+                    "scoreBonus": -1
+                }
+            ]
+        },
+        {
+            "name": "Wings",
+            "rollChance": {
+                "from": 32,
+                "to": 33
+            },
+            "hasMutationStrength": true,
+            "adjustments": [
+                {
+                    "type": "CalculatedAbilityBonus",
+                    "abilityKey": "HUAPPEAR",
+                    "scoreBonus": -2
+                }
+            ]
+        },
+        {
+            "name": "Echolocation",
+            "rollChance": {
+                "from": 34,
+                "to": 35
+            }
+        }
+    ],
+    "psychicMutations": [
+        {
+            "name": "Enhanced Intelligence",
+            "rollChance": {
+                "from": 1,
+                "to": 5
+            },
+            "adjustments": [
+                {
+                    "type": "PrimeAbility",
+                    "abilityKey": "INT",
+                    "initialMod": 6,
+                    "minimumMod": 2
+                }
+            ]
+        },
+        {
+            "name": "Enhanced Mental Fortitude",
+            "rollChance": {
+                "from": 6,
+                "to": 10
+            },
+            "adjustments": [
+                {
+                    "type": "PrimeAbility",
+                    "abilityKey": "MFOR",
+                    "initialMod": 6,
+                    "minimumMod": 2
+                }
+            ]
+        },
+        {
+            "name": "Enhanced Charisma",
+            "rollChance": {
+                "from": 11,
+                "to": 15
+            },
+            "adjustments": [
+                {
+                    "type": "PrimeAbility",
+                    "abilityKey": "CHA",
+                    "initialMod": 6,
+                    "minimumMod": 2
+                }
+            ]
+        },
+        {
+            "name": "Spatial Awareness",
+            "rollChance": {
+                "from": 16,
+                "to": 18
+            }
+        }
+    ]
+}

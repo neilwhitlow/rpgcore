@@ -43,7 +43,13 @@ func NewDiceRoller() DiceRoller {
 	return dr
 }
 
-// RollOnce - a single roll of the dice of the specified type.
+// RollOnce - a single roll from 1 to max, unconstrained by
+// real-life polyhedral dice types
+func (dr *DiceRoller) RollFree(max int) int {
+	return dr.rng.Intn(max-1) + 1
+}
+
+// RollOnce- a single roll of the dice of the specified type.
 // 1d6, 1d20, etc
 func (dr *DiceRoller) RollOnce(dt DieType) int {
 	return dr.rng.Intn(int(dt)-1) + 1

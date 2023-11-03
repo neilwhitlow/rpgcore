@@ -33,6 +33,17 @@
     "baseInitialScore": 10
   },   
   {
+    "name": "Pre-Apoc Tech",
+    "abbreviation": "TECH",
+    "primeModKey": "INT"
+  },        
+  {
+    "name": "Notice",
+    "abbreviation": "NOTICE",
+    "primeModKey": "INT",
+    "primeScoreKey": "SEN"
+  },  
+  {
     "name": "Move Silently",
     "abbreviation": "MOVESILENTLY",
     "primeModKey": "DEX"
@@ -43,14 +54,23 @@
     "primeModKey": "INT"
   }, 
   {
-    "name": "Notice",
-    "abbreviation": "NOTICE",
-    "primeModKey": "INT",
-    "primeScoreKey": "SEN"
-  },      
+    "name": "Walking Speed",
+    "abbreviation": "WSPEED",
+    "primeModKey": "DEX"
+  },
   {
-    "name": "Pre-Apoc Tech",
-    "abbreviation": "TECH",
-    "primeModKey": "INT"
-  }      
+    "name": "Running Speed",
+    "abbreviation": "RSPEED",
+    "primeModKey": "DEX"
+  },
+  {
+    "name": "Swimming Speed",
+    "abbreviation": "SWSPEED",
+    "primeModKey": "DEX"
+  }, 
+  {
+    "name": "Human Appearance",
+    "abbreviation": "HUAPPEAR",
+    "baseInitialScore": 20
+  }   
 ]

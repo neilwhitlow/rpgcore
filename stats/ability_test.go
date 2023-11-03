@@ -7,39 +7,13 @@ import (
 
 	"github.com/neilwhitlow/rpgcore/dice"
 	"github.com/neilwhitlow/rpgcore/stats"
+	"github.com/stretchr/testify/assert"
 )
-
-func TestGetModifierMap(t *testing.T) {
-
-	tests := map[string]struct {
-		input    int
-		expected int
-	}{
-		"0":  {input: 0, expected: -4},
-		"7":  {input: 7, expected: -1},
-		"8":  {input: 8, expected: 0},
-		"12": {input: 12, expected: 0},
-		"13": {input: 13, expected: 1},
-		"40": {input: 40, expected: 14},
-	}
-
-	modifierMap := stats.GetModifierMap()
-	for name, test := range tests {
-		t.Run(name, func(t *testing.T) {
-			actual := modifierMap[test.input]
-			if actual != test.expected {
-				t.Errorf("For score %d, expected %d, got %d)", test.input, test.expected, actual)
-			}
-		})
-	}
-}
 
 func TestGetPrimeAbilitiesMap(t *testing.T) {
 	t.Run("dummy", func(t *testing.T) {
 		actual := stats.GetPrimeAbilitiesMap()
-		if actual == nil {
-			t.Errorf("Expected abilities map, got nil instead)")
-		}
+		assert.NotNil(t, actual, "Expected abilities map, got nil instead)")
 	})
 }
 
@@ -62,9 +36,7 @@ func TestGetPrimeAbilityModifier(t *testing.T) {
 			strength.InitialScore = test.init
 			strength.ModifierBonus = test.bonus
 			actual := strength.GetModifier()
-			if actual != test.expected {
-				t.Errorf("For score %d, expected %d, got %d)", test.init, test.expected, actual)
-			}
+			assert.Equal(t, test.expected, actual)
 		})
 	}
 }

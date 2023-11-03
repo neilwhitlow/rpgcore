@@ -4,12 +4,13 @@ import (
 	_ "embed"
 	"encoding/json"
 
-	"github.com/jszwec/csvutil"
 	lhm "github.com/neilwhitlow/collections/linkedhashmap"
 	"github.com/neilwhitlow/rpgcore/dice"
 )
 
 type Ability interface {
+	GetName() string
+	GetAbbreviation() string
 	GetScore() int
 }
 
@@ -44,8 +45,24 @@ func (a PrimeAbility) GetScore() int {
 	return a.InitialScore + a.ScoreBonus
 }
 
+func (a PrimeAbility) GetAbbreviation() string {
+	return a.Abbreviation
+}
+
+func (a PrimeAbility) GetName() string {
+	return a.Name
+}
+
 func (a CalculatedAbility) GetScore() int {
 	return a.InitialScore + a.ScoreBonus
+}
+
+func (a CalculatedAbility) GetAbbreviation() string {
+	return a.Abbreviation
+}
+
+func (a CalculatedAbility) GetName() string {
+	return a.Name
 }
 
 //go:embed data/prime_abilities.json
@@ -77,33 +94,6 @@ func GetCalculatedAbilitiesMap() *lhm.LinkedHashMap[string, CalculatedAbility] {
 		abilities.Put(item.Abbreviation, item)
 	}
 	return abilities
-}
-
-type AbilityModifer struct {
-	Score    int `csv:"score"`
-	Modifier int `csv:"mod"`
-}
-
-func GetScoreModifier(modifiers map[int]int, score int) int {
-	if modifier, ok := modifiers[score]; ok {
-		return modifier
-	}
-	return -999
-}
-
-//go:embed data/ability_modifiers.csv
-var modifierData []byte
-
-func GetModifierMap() map[int]int {
-	var mods []AbilityModifer
-	modiferMap := make(map[int]int)
-	if err := csvutil.Unmarshal(modifierData, &mods); err != nil {
-		return modiferMap
-	}
-	for _, m := range mods {
-		modiferMap[m.Score] = m.Modifier
-	}
-	return modiferMap
 }
 
 func (ca CalculatedAbility) GetScoreFromPrimeMod(pa PrimeAbility) int {
