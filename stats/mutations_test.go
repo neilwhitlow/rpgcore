@@ -61,7 +61,7 @@ func TestGetPsychicMutationEmpty(t *testing.T) {
 func TestRollMutationStrength(t *testing.T) {
 	mutations := stats.GetMutationDefinitions()
 	assert.NotNil(t, mutations)
-	mut := getTestMutationWithMutationStrength()
+	mut := getMutationWithMutationStrength()
 	actual := mut.RollMutationStrength().MutationStrength
 	assert.GreaterOrEqual(t, actual, 3)
 	assert.LessOrEqual(t, actual, 18)
@@ -70,18 +70,64 @@ func TestRollMutationStrength(t *testing.T) {
 func TestGetMutationStrengthModifier(t *testing.T) {
 	mutations := stats.GetMutationDefinitions()
 	assert.NotNil(t, mutations)
-	mut := getTestMutationWithMutationStrength()
+	mut := getMutationWithMutationStrength()
 	actual := mut.RollMutationStrength().GetMutationStrengthModifier()
 	assert.GreaterOrEqual(t, actual, -3)
 	assert.LessOrEqual(t, actual, 3)
 }
 
-func getTestMutationWithMutationStrength() stats.Mutation {
+func TestGetFinalNameWithRefinement(t *testing.T) {
+	mut := getMutationWithRefinement()
+	mut.RefinedName = "Poisons"
+	actual := mut.GetFinalName()
+	assert.Equal(t, "Poisons", actual)
+}
+
+func TestGetFinalNameWithEmptyRefinement(t *testing.T) {
+	mut := getMutationWithRefinement()
+	mut.RefinedName = ""
+	actual := mut.GetFinalName()
+	assert.Equal(t, "Immunity", actual)
+}
+
+func TestGetFinalNameWithEmptyNames(t *testing.T) {
+	mut := getMutationWithRefinement()
+	mut.Name = ""
+	mut.RefinedName = ""
+	actual := mut.GetFinalName()
+	assert.Equal(t, "", actual)
+}
+
+func TestRollRefinedName(t *testing.T) {
+	mut := getMutationWithRefinement()
+	mut.RefinedName = "Poisons"
+	actual := mut.RollRefinedName()
+	assert.Equal(t, "Immunity - Poisons", actual)
+}
+
+func getMutationWithMutationStrength() stats.Mutation {
 	adjustments := []stats.Adjustments{{Type: "CalculatedAbilityBonus", AbilityKey: "HUAPPEAR", ScoreBonus: -2}}
 	return stats.Mutation{
 		Name:                "Wings",
 		RollChance:          stats.RollChance{From: 32, To: 33},
 		HasMutationStrength: true,
 		Adjustments:         adjustments,
+	}
+}
+
+func getMutationWithRefinement() stats.Mutation {
+	adjustments := []stats.Adjustments{
+		{Type: "CalculatedAbilityBonus", AbilityKey: "PFOR", ScoreBonus: 5, AddMutationStrengthMod: true},
+	}
+	refinements := []string{
+		"Poisons", "Poisons",
+	}
+	return stats.Mutation{
+		Name:                "Immunity",
+		RollChance:          stats.RollChance{From: 1, To: 10},
+		HasMutationStrength: true,
+		Adjustments:         adjustments,
+		Refinements:         refinements,
+		RefinedNameFormat:   "%s - %s",
 	}
 }

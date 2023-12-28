@@ -12,7 +12,7 @@ import (
 )
 
 // DieType is a convenience function for popular dice notation
-// d6 for a six sided die, d20 for a twenty sided die, etc
+// d6 for a six sided die, d20 for a twenty sided die, etc.
 type DieType int
 
 const (
@@ -25,17 +25,17 @@ const (
 	D20 DieType = 20
 )
 
-// DiceRoller is a random roller
-type DiceRoller struct {
+// Roller is a random roller.
+type Roller struct {
 	rng *rand.Rand
 }
 
-// NewDiceRoller returns a new random roller based on the
+// NewRoller returns a new random roller based on the
 // 64bit Mersenne Twister pseudo random number generator
 // from the package https://github.com/seehuhn/mt19937.
-// The roller is seeded from the system time nanoseconds
-func NewDiceRoller() DiceRoller {
-	dr := DiceRoller{}
+// The roller is seeded from the system time nanoseconds.
+func NewRoller() Roller {
+	dr := Roller{}
 	dr.rng = rand.New(mt19937.New())
 	dummy := time.Now().UnixNano()
 	dr.rng.Seed(dummy)
@@ -44,22 +44,25 @@ func NewDiceRoller() DiceRoller {
 }
 
 // RollOnce - a single roll from 1 to max, unconstrained by
-// real-life polyhedral dice types
-func (dr *DiceRoller) RollFree(max int) int {
+// real-life polyhedral dice types.
+func (dr *Roller) RollFree(max int) int {
+	if max == 1 {
+		return max
+	}
 	return dr.rng.Intn(max-1) + 1
 }
 
 // RollOnce- a single roll of the dice of the specified type.
-// 1d6, 1d20, etc
-func (dr *DiceRoller) RollOnce(dt DieType) int {
+// 1d6, 1d20, etc.
+func (dr *Roller) RollOnce(dt DieType) int {
 	return dr.rng.Intn(int(dt)-1) + 1
 }
 
 // RollMany - a convenience function for when a randomization
 // requires multiple dice to be rolled.  For example: 3d6, or
-// "percentile dice" (10d10)
-func (dr *DiceRoller) RollMany(numberOfDice int, dt DieType) int {
-	var total int = 0
+// "percentile dice" (10d10).
+func (dr *Roller) RollMany(numberOfDice int, dt DieType) int {
+	var total int
 	if numberOfDice <= 0 {
 		return total
 	}
@@ -74,10 +77,10 @@ func (dr *DiceRoller) RollMany(numberOfDice int, dt DieType) int {
 // where the lowest roll is dropped to help protect against
 // outrageously low results.  For example: 4d6 minus lowest die
 // instead of a straight 3d6 roll for character attributes.
-func (dr *DiceRoller) RollAndDropLowest(numberOfDice int, dt DieType) (int, error) {
-	var total int = 0
+func (dr *Roller) RollAndDropLowest(numberOfDice int, dt DieType) (int, error) {
+	var total int
 	if numberOfDice <= 1 {
-		return total, fmt.Errorf("NumberOfDice: %d, must be greater than one to drop lowest roll.", numberOfDice)
+		return total, fmt.Errorf("NumberOfDice: %d, must be greater than one to drop lowest roll", numberOfDice)
 	}
 	rolls := make([]int, numberOfDice)
 	for i := 0; i < numberOfDice; i++ {

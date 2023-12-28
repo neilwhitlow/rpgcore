@@ -10,28 +10,29 @@ import (
 
 type Character struct {
 	Name                string
-	PrimeAbilities      *lhm.LinkedHashMap[string, stats.PrimeAbility]
-	CalculatedAbilities *lhm.LinkedHashMap[string, stats.CalculatedAbility]
+	PrimeAbilities      *lhm.LinkedHashMap[string, stats.Ability]
+	CalculatedAbilities *lhm.LinkedHashMap[string, stats.Ability]
 	PhysicalMutations   []stats.Mutation
 	PsychicMutations    []stats.Mutation
 }
 
-func New() (char Character) {
+// New returns a new empty Character, ready to be populated.
+func New() Character {
 	c := Character{}
 	c.Name = "New Character"
-	c.PrimeAbilities = lhm.New[string, stats.PrimeAbility]()
-	c.CalculatedAbilities = lhm.New[string, stats.CalculatedAbility]()
+	c.PrimeAbilities = lhm.New[string, stats.Ability]()
+	c.CalculatedAbilities = lhm.New[string, stats.Ability]()
 	c.PhysicalMutations = make([]stats.Mutation, 0)
 	c.PsychicMutations = make([]stats.Mutation, 0)
 	return c
 }
 
-func GenerateCharacter() (char Character) {
+func GenerateCharacter() Character {
 	c := New()
 
-	diceRoller := dice.NewDiceRoller()
+	diceRoller := dice.NewRoller()
 
-	pa := stats.GetPrimeAbilitiesMap()
+	pa := stats.GetPrimeAbilityDefinitions()
 	if pa == nil {
 		panic("Expected abilities map, got nil instead)")
 	}
@@ -45,7 +46,7 @@ func GenerateCharacter() (char Character) {
 		}
 	}
 
-	ca := stats.GetCalculatedAbilitiesMap()
+	ca := stats.GetCalculatedAbilityDefinitions()
 	if ca == nil {
 		panic("Expected abilities map, got nil instead)")
 	}
@@ -57,7 +58,8 @@ func GenerateCharacter() (char Character) {
 
 	mutationDefinitions := stats.GetMutationDefinitions()
 
-	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetPhysicalMutation("Enhanced Accuracy"))
+	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetPhysicalMutation("Partial Carapace"))
+	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetPhysicalMutation("Energy Negation"))
 
 	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetRandomPhysicalMutation())
 	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetRandomPhysicalMutation())
@@ -65,6 +67,13 @@ func GenerateCharacter() (char Character) {
 	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetRandomPhysicalMutation())
 	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetRandomPhysicalMutation())
 
+	for i := 0; i < len(c.PhysicalMutations); i++ {
+		physMut := c.PhysicalMutations[i]
+		if len(physMut.Refinements) > 0 {
+			physMut.RefinedName = physMut.RollRefinedName()
+			c.PhysicalMutations[i] = physMut
+		}
+	}
 	for _, physMut := range c.PhysicalMutations {
 		for _, adjustment := range physMut.Adjustments {
 			if adjustment.Type == "PrimeAbility" {
@@ -79,10 +88,17 @@ func GenerateCharacter() (char Character) {
 					ability.ScoreBonus += adjustment.ScoreBonus
 					c.CalculatedAbilities.Put(ability.Abbreviation, ability)
 				}
+				if adjustment.AddMutationStrengthMod {
+					ability.ScoreBonus += physMut.GetMutationStrengthModifier()
+					c.CalculatedAbilities.Put(ability.Abbreviation, ability)
+				}
 			}
 		}
 	}
 
+	c.PsychicMutations = append(c.PsychicMutations, mutationDefinitions.GetRandomPsychicMutation())
+	c.PsychicMutations = append(c.PsychicMutations, mutationDefinitions.GetRandomPsychicMutation())
+	c.PsychicMutations = append(c.PsychicMutations, mutationDefinitions.GetRandomPsychicMutation())
 	c.PsychicMutations = append(c.PsychicMutations, mutationDefinitions.GetRandomPsychicMutation())
 
 	for _, psychicMut := range c.PsychicMutations {
@@ -111,13 +127,13 @@ func GenerateCharacter() (char Character) {
 		}
 		if a.PrimeScoreKey != "" {
 			if a.PrimeScoreMultiplier != 0 {
-				initScore += a.GetScoreFromPrimeMultiple(c.PrimeAbilities.Get((a.PrimeScoreKey)))
+				initScore += a.GetScoreFromPrimeMultiple(c.PrimeAbilities)
 			} else {
 				initScore += c.PrimeAbilities.Get(a.PrimeScoreKey).GetScore()
 			}
 		}
 		if a.PrimeModKey != "" {
-			initScore += c.PrimeAbilities.Get(a.PrimeModKey).GetModifier()
+			initScore += a.GetScoreFromPrimeMod(c.PrimeAbilities)
 		}
 		a.InitialScore = initScore
 		c.CalculatedAbilities.Put(a.Abbreviation, a)
@@ -125,6 +141,17 @@ func GenerateCharacter() (char Character) {
 
 	return c
 }
+
+func (c Character) GetReadOnlyAbilities(abilities *lhm.LinkedHashMap[string, stats.Ability]) *lhm.LinkedHashMap[string, stats.AbilityDisplay] {
+	pa := lhm.New[string, stats.AbilityDisplay]()
+	for _, key := range abilities.Keys() {
+		a := abilities.Get(key)
+		pa.Put(key, a)
+	}
+	return pa
+}
+
+// refactor these next 2 into generic methods that operate on comparable and relocate them to another package
 
 // Max returns the larger of x or y.
 func Max(x, y int) int {

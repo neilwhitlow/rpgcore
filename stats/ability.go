@@ -8,21 +8,13 @@ import (
 	"github.com/neilwhitlow/rpgcore/dice"
 )
 
-type Ability interface {
+type AbilityDisplay interface {
 	GetName() string
 	GetAbbreviation() string
 	GetScore() int
+	GetModifier() int
 }
-
-type PrimeAbility struct {
-	AbilityCore
-}
-
-type CalculatedAbility struct {
-	AbilityCore
-}
-
-type AbilityCore struct {
+type Ability struct {
 	Name                  string `json:"name"`
 	Abbreviation          string `json:"abbreviation"`
 	PrimeModKey           string `json:"primeModKey,omitempty"`
@@ -37,43 +29,29 @@ type AbilityCore struct {
 	MaximumInitialScore   int
 }
 
-func (a PrimeAbility) GetModifier() int {
+func (a Ability) GetScore() int {
+	return a.InitialScore + a.ScoreBonus
+}
+
+func (a Ability) GetAbbreviation() string {
+	return a.Abbreviation
+}
+
+func (a Ability) GetName() string {
+	return a.Name
+}
+
+func (a Ability) GetModifier() int {
 	return GetScoreModifier(GetModifierMap(), a.GetScore()) + a.ModifierBonus
-}
-
-func (a PrimeAbility) GetScore() int {
-	return a.InitialScore + a.ScoreBonus
-}
-
-func (a PrimeAbility) GetAbbreviation() string {
-	return a.Abbreviation
-}
-
-func (a PrimeAbility) GetName() string {
-	return a.Name
-}
-
-func (a CalculatedAbility) GetScore() int {
-	return a.InitialScore + a.ScoreBonus
-}
-
-func (a CalculatedAbility) GetAbbreviation() string {
-	return a.Abbreviation
-}
-
-func (a CalculatedAbility) GetName() string {
-	return a.Name
 }
 
 //go:embed data/prime_abilities.json
 var primeAbilityDefinitions []byte
 
-func GetPrimeAbilitiesMap() *lhm.LinkedHashMap[string, PrimeAbility] {
-	//a := make(map[string]PrimeAbility)
+func GetPrimeAbilityDefinitions() *lhm.LinkedHashMap[string, Ability] {
+	abilities := lhm.New[string, Ability]()
 
-	abilities := lhm.New[string, PrimeAbility]()
-
-	a := make([]PrimeAbility, 8)
+	a := make([]Ability, 8)
 	_ = json.Unmarshal(primeAbilityDefinitions, &a)
 	for _, item := range a {
 		abilities.Put(item.Abbreviation, item)
@@ -85,10 +63,10 @@ func GetPrimeAbilitiesMap() *lhm.LinkedHashMap[string, PrimeAbility] {
 //go:embed data/calculated_abilities.json
 var calculatedAbilityDefinitions []byte
 
-func GetCalculatedAbilitiesMap() *lhm.LinkedHashMap[string, CalculatedAbility] {
-	abilities := lhm.New[string, CalculatedAbility]()
+func GetCalculatedAbilityDefinitions() *lhm.LinkedHashMap[string, Ability] {
+	abilities := lhm.New[string, Ability]()
 
-	a := make([]CalculatedAbility, 4)
+	a := make([]Ability, 8)
 	_ = json.Unmarshal(calculatedAbilityDefinitions, &a)
 	for _, item := range a {
 		abilities.Put(item.Abbreviation, item)
@@ -96,11 +74,18 @@ func GetCalculatedAbilitiesMap() *lhm.LinkedHashMap[string, CalculatedAbility] {
 	return abilities
 }
 
-func (ca CalculatedAbility) GetScoreFromPrimeMod(pa PrimeAbility) int {
-	return pa.GetModifier()
+// GetScoreFromPrimeMod
+// Currently, this is a simple implementation to return the prime
+// ability's modifier. Ability in method receiver should only ever be a Calculated Ability.
+func (a Ability) GetScoreFromPrimeMod(primeAbilities *lhm.LinkedHashMap[string, Ability]) int {
+	return primeAbilities.Get(a.PrimeModKey).GetModifier()
 }
 
-func (ca CalculatedAbility) GetScoreFromPrimeMultiple(pa PrimeAbility) int {
-	diceRoller := dice.NewDiceRoller()
-	return diceRoller.RollMany(pa.GetScore(), dice.DieType(ca.PrimeScoreMultiplier))
+// GetScoreFromPrimeMultiple
+// Roll a dice of a given type a number of times equal to the current final score
+// of a Prime ability. Ability in method receiver should only ever be a Calculated Ability.
+func (a Ability) GetScoreFromPrimeMultiple(primeAbilities *lhm.LinkedHashMap[string, Ability]) int {
+	diceRoller := dice.NewRoller()
+	primeScore := primeAbilities.Get(a.PrimeScoreKey).GetScore()
+	return diceRoller.RollMany(primeScore, dice.DieType(a.PrimeScoreMultiplier))
 }

@@ -1,6 +1,6 @@
 module github.com/neilwhitlow/rpgcore
 
-go 1.21.1
+go 1.21.4
 
 require github.com/seehuhn/mt19937 v1.0.0
 

@@ -26,7 +26,7 @@ func TestRoll(t *testing.T) {
 
 	for i := 1; i <= 1000; i++ {
 		for name, test := range tests {
-			dr := dice.NewDiceRoller()
+			dr := dice.NewRoller()
 			t.Run(name, func(t *testing.T) {
 				result := dr.RollOnce(test.diceType)
 				if result < test.minExpected || result > test.maxExpected {
@@ -46,7 +46,7 @@ func TestRollMany(t *testing.T) {
 
 	for i := 1; i <= 10; i++ {
 		for name, test := range tests {
-			dr := dice.NewDiceRoller()
+			dr := dice.NewRoller()
 			t.Run(name, func(t *testing.T) {
 				result := dr.RollMany(test.numberOfRolls, test.diceType)
 				if result < test.minExpected || result > test.maxExpected {
@@ -66,7 +66,7 @@ func TestRollAndDropLowest(t *testing.T) {
 
 	for i := 1; i <= 5; i++ {
 		for name, test := range tests {
-			dr := dice.NewDiceRoller()
+			dr := dice.NewRoller()
 			t.Run(name, func(t *testing.T) {
 				result, err := dr.RollAndDropLowest(test.numberOfRolls, test.diceType)
 				if err != nil {

@@ -1,6 +1,6 @@
 {
-    "maxPhysicalRoll": 35,
-    "maxPsychicRoll": 18,
+    "maxPhysicalRoll": 40,
+    "maxPsychicRoll": 38,
     "physicalMutations": [
         {
             "name": "Enhanced Strength",
@@ -162,7 +162,77 @@
                 "from": 34,
                 "to": 35
             }
-        }
+        },
+        {
+            "name": "Partial Carapace",
+            "rollChance": {
+                "from": 36,
+                "to": 36
+            },
+            "hasMutationStrength": true,
+            "adjustments": [
+                {
+                    "type": "CalculatedAbilityBonus",
+                    "abilityKey": "HUAPPEAR",
+                    "scoreBonus": -2
+                },
+                {
+                    "type": "CalculatedAbilityBonus",
+                    "abilityKey": "ARMORCLASS",
+                    "scoreBonus": 5,
+                    "addMutationStrengthMod": true
+                }                
+            ]            
+        },        
+        {
+            "name": "Full Carapace",
+            "rollChance": {
+                "from": 37,
+                "to": 37
+            },
+            "hasMutationStrength": true,
+            "adjustments": [
+                {
+                    "type": "CalculatedAbilityBonus",
+                    "abilityKey": "HUAPPEAR",
+                    "scoreBonus": -2
+                },
+                {
+                    "type": "CalculatedAbilityBonus",
+                    "abilityKey": "ARMORCLASS",
+                    "scoreBonus": 5,
+                    "addMutationStrengthMod": true
+                }                 
+            ]            
+        },
+        {
+            "name": "Camouflage",
+            "rollChance": {
+                "from": 38,
+                "to": 38
+            },
+            "hasMutationStrength": true
+        },
+        {
+            "name": "Electrogenic",
+            "rollChance": {
+                "from": 39,
+                "to": 39
+            },
+            "hasMutationStrength": true
+        },               
+        {
+            "name": "Energy Negation",
+            "rollChance": {
+                "from": 40,
+                "to": 40
+            },
+            "hasMutationStrength": true,
+            "refinedNameFormat": "%s - %s",
+            "refinements": [
+                "Radiation", "Electricity","Lasers", "Heat", "Cold"
+            ]
+        }                                        
     ],
     "psychicMutations": [
         {
@@ -171,6 +241,7 @@
                 "from": 1,
                 "to": 5
             },
+            "hasMutationStrength": false,
             "adjustments": [
                 {
                     "type": "PrimeAbility",
@@ -186,6 +257,7 @@
                 "from": 6,
                 "to": 10
             },
+            "hasMutationStrength": false,
             "adjustments": [
                 {
                     "type": "PrimeAbility",
@@ -201,6 +273,7 @@
                 "from": 11,
                 "to": 15
             },
+            "hasMutationStrength": false,
             "adjustments": [
                 {
                     "type": "PrimeAbility",
@@ -215,7 +288,96 @@
             "rollChance": {
                 "from": 16,
                 "to": 18
-            }
-        }
+            },
+            "hasMutationStrength": false
+        },
+        {
+            "name": "Instill Fear",
+            "rollChance": {
+                "from": 19,
+                "to": 19
+            },
+            "hasMutationStrength": true
+        },
+        {
+            "name": "Force Field",
+            "rollChance": {
+                "from": 20,
+                "to": 22
+            },
+            "hasMutationStrength": true
+        },           
+        {
+            "name": "Panic Teleportation",
+            "rollChance": {
+                "from": 23,
+                "to": 26
+            },
+            "hasMutationStrength": true
+        },           
+        {
+            "name": "Charm",
+            "rollChance": {
+                "from": 27,
+                "to": 27
+            },
+            "hasMutationStrength": true
+        },         
+        {
+            "name": "Bewilder",
+            "rollChance": {
+                "from": 28,
+                "to": 28
+            },
+            "hasMutationStrength": true
+        },
+        {
+            "name": "Empathy",
+            "rollChance": {
+                "from": 29,
+                "to": 32
+            },
+            "hasMutationStrength": true
+        },
+        {
+            "name": "Illusion",
+            "rollChance": {
+                "from": 33,
+                "to": 33
+            },
+            "hasMutationStrength": true
+        },                            
+        {
+            "name": "Premonition",
+            "rollChance": {
+                "from": 34,
+                "to": 34
+            },
+            "hasMutationStrength": true
+        } ,          
+        {
+            "name": "Life Drain",
+            "rollChance": {
+                "from": 35,
+                "to": 35
+            },
+            "hasMutationStrength": true
+        } , 
+        {
+            "name": "Magnetic Manipulation",
+            "rollChance": {
+                "from": 36,
+                "to": 36
+            },
+            "hasMutationStrength": true
+        }, 
+        {
+            "name": "Mental Boost",
+            "rollChance": {
+                "from": 37,
+                "to": 38
+            },
+            "hasMutationStrength": true
+        }                             
     ]
 }

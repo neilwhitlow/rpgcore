@@ -8,7 +8,6 @@ import (
 )
 
 func TestGetModifierMap(t *testing.T) {
-
 	tests := map[string]struct {
 		input    int
 		expected int
