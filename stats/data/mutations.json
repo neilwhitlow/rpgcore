@@ -232,7 +232,19 @@
             "refinements": [
                 "Radiation", "Electricity","Lasers", "Heat", "Cold"
             ]
-        }                                        
+        },                                        
+        {
+            "name": "Blasting Hands",
+            "rollChance": {
+                "from": 41,
+                "to": 42
+            },
+            "hasMutationStrength": true,
+            "refinedNameFormat": "%s - %s",
+            "refinements": [
+                "Gamma Radiation", "Electricity", "Laser", "Microwave Heat"
+            ]
+        }          
     ],
     "psychicMutations": [
         {

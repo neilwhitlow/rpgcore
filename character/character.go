@@ -28,45 +28,76 @@ func New() Character {
 }
 
 func GenerateCharacter() Character {
+	totalMutationTarget := 5
+
 	c := New()
 
 	diceRoller := dice.NewRoller()
 
-	pa := stats.GetPrimeAbilityDefinitions()
-	if pa == nil {
-		panic("Expected abilities map, got nil instead)")
-	}
-
-	for _, key := range pa.Keys() {
-		a := pa.Get(key)
-		rollResult, err := diceRoller.RollAndDropLowest(4, dice.D6)
-		if err == nil {
-			a.InitialScore = rollResult
-			c.PrimeAbilities.Put(a.Abbreviation, a)
-		}
-	}
-
-	ca := stats.GetCalculatedAbilityDefinitions()
-	if ca == nil {
-		panic("Expected abilities map, got nil instead)")
-	}
-
-	for _, key := range ca.Keys() {
-		a := ca.Get(key)
-		c.CalculatedAbilities.Put(a.Abbreviation, a)
-	}
+	c.PrimeAbilities = rollPrimeAbilities(diceRoller)
+	c.CalculatedAbilities = getCalculatedAbilityDefinitions()
 
 	mutationDefinitions := stats.GetMutationDefinitions()
 
-	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetPhysicalMutation("Partial Carapace"))
-	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetPhysicalMutation("Energy Negation"))
+	physMutNumber := diceRoller.RollFree(int(dice.D6))
+	physMutNumber = Min(physMutNumber, totalMutationTarget)
+	psychicMutNumber := int(dice.D6) - physMutNumber
 
-	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetRandomPhysicalMutation())
-	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetRandomPhysicalMutation())
-	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetRandomPhysicalMutation())
-	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetRandomPhysicalMutation())
-	c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetRandomPhysicalMutation())
+	rollPhysicalMutations(physMutNumber, &c, mutationDefinitions)
 
+	rollPsychicMutations(psychicMutNumber, &c, mutationDefinitions)
+
+	for _, key := range c.CalculatedAbilities.Keys() {
+		a := c.CalculatedAbilities.Get(key)
+		initScore := a.InitialScore
+		if a.BaseInitialScore > 0 {
+			initScore += a.BaseInitialScore
+		}
+		if a.PrimeScoreKey != "" {
+			if a.PrimeScoreMultiplier != 0 {
+				initScore += a.GetScoreFromPrimeMultiple(c.PrimeAbilities)
+			} else {
+				initScore += c.PrimeAbilities.Get(a.PrimeScoreKey).GetScore()
+			}
+		}
+		if a.PrimeModKey != "" {
+			initScore += a.GetScoreFromPrimeMod(c.PrimeAbilities)
+		}
+		a.InitialScore = initScore
+		c.CalculatedAbilities.Put(a.Abbreviation, a)
+	}
+
+	return c
+}
+
+func rollPsychicMutations(psychicMutNumber int, c *Character, mutationDefinitions stats.MutationDefinitions) {
+	for m := 0; m < psychicMutNumber; m++ {
+		c.PsychicMutations = append(c.PsychicMutations, mutationDefinitions.GetRandomPsychicMutation())
+	}
+
+	for _, psychicMut := range c.PsychicMutations {
+		for _, adjustment := range psychicMut.Adjustments {
+			if adjustment.Type == "PrimeAbility" {
+				ability := c.PrimeAbilities.Get(adjustment.AbilityKey)
+				adjustmentCalc := Max(adjustment.MinimumMod, (adjustment.InitialMod - ability.GetModifier()))
+				ability.InitialScore += adjustmentCalc
+				c.PrimeAbilities.Put(ability.Abbreviation, ability)
+			}
+			if adjustment.Type == "CalculatedAbilityBonus" {
+				ability := c.CalculatedAbilities.Get(adjustment.AbilityKey)
+				if adjustment.ScoreBonus != 0 {
+					ability.ScoreBonus += adjustment.ScoreBonus
+					c.CalculatedAbilities.Put(ability.Abbreviation, ability)
+				}
+			}
+		}
+	}
+}
+
+func rollPhysicalMutations(physMutNumber int, c *Character, mutationDefinitions stats.MutationDefinitions) {
+	for p := 0; p < physMutNumber; p++ {
+		c.PhysicalMutations = append(c.PhysicalMutations, mutationDefinitions.GetRandomPhysicalMutation())
+	}
 	for i := 0; i < len(c.PhysicalMutations); i++ {
 		physMut := c.PhysicalMutations[i]
 		if len(physMut.Refinements) > 0 {
@@ -95,51 +126,40 @@ func GenerateCharacter() Character {
 			}
 		}
 	}
+}
 
-	c.PsychicMutations = append(c.PsychicMutations, mutationDefinitions.GetRandomPsychicMutation())
-	c.PsychicMutations = append(c.PsychicMutations, mutationDefinitions.GetRandomPsychicMutation())
-	c.PsychicMutations = append(c.PsychicMutations, mutationDefinitions.GetRandomPsychicMutation())
-	c.PsychicMutations = append(c.PsychicMutations, mutationDefinitions.GetRandomPsychicMutation())
-
-	for _, psychicMut := range c.PsychicMutations {
-		for _, adjustment := range psychicMut.Adjustments {
-			if adjustment.Type == "PrimeAbility" {
-				ability := c.PrimeAbilities.Get(adjustment.AbilityKey)
-				adjustmentCalc := Max(adjustment.MinimumMod, (adjustment.InitialMod - ability.GetModifier()))
-				ability.InitialScore += adjustmentCalc
-				c.PrimeAbilities.Put(ability.Abbreviation, ability)
-			}
-			if adjustment.Type == "CalculatedAbilityBonus" {
-				ability := c.CalculatedAbilities.Get(adjustment.AbilityKey)
-				if adjustment.ScoreBonus != 0 {
-					ability.ScoreBonus += adjustment.ScoreBonus
-					c.CalculatedAbilities.Put(ability.Abbreviation, ability)
-				}
-			}
-		}
+func getCalculatedAbilityDefinitions() *lhm.LinkedHashMap[string, stats.Ability] {
+	abilities := lhm.New[string, stats.Ability]()
+	ca := stats.GetCalculatedAbilityDefinitions()
+	if ca == nil {
+		panic("Expected abilities map, got nil instead)")
 	}
 
 	for _, key := range ca.Keys() {
-		a := c.CalculatedAbilities.Get(key)
-		initScore := a.InitialScore
-		if a.BaseInitialScore > 0 {
-			initScore += a.BaseInitialScore
-		}
-		if a.PrimeScoreKey != "" {
-			if a.PrimeScoreMultiplier != 0 {
-				initScore += a.GetScoreFromPrimeMultiple(c.PrimeAbilities)
-			} else {
-				initScore += c.PrimeAbilities.Get(a.PrimeScoreKey).GetScore()
-			}
-		}
-		if a.PrimeModKey != "" {
-			initScore += a.GetScoreFromPrimeMod(c.PrimeAbilities)
-		}
-		a.InitialScore = initScore
-		c.CalculatedAbilities.Put(a.Abbreviation, a)
+		a := ca.Get(key)
+		abilities.Put(a.Abbreviation, a)
+	}
+	return abilities
+}
+
+func rollPrimeAbilities(roller dice.Roller) *lhm.LinkedHashMap[string, stats.Ability] {
+	abilities := lhm.New[string, stats.Ability]()
+	var numberOfDice = 4
+
+	pa := stats.GetPrimeAbilityDefinitions()
+	if pa == nil {
+		panic("Expected abilities map, got nil instead)")
 	}
 
-	return c
+	for _, key := range pa.Keys() {
+		a := pa.Get(key)
+		rollResult, err := roller.RollAndDropLowest(numberOfDice, dice.D6)
+		if err == nil {
+			a.InitialScore = rollResult
+			abilities.Put(a.Abbreviation, a)
+		}
+	}
+	return abilities
 }
 
 func (c Character) GetReadOnlyAbilities(abilities *lhm.LinkedHashMap[string, stats.Ability]) *lhm.LinkedHashMap[string, stats.AbilityDisplay] {

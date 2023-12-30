@@ -1,0 +1,81 @@
+[
+    {
+        "name": "Pure Human",
+        "baseWalkSpeed": 12,
+        "baseSwimSpeed": 3,
+        "baseArmorClass": 10,
+        "adjustments": [
+            {
+                "type": "PrimeAbility",
+                "abilityKey": "CON",
+                "scoreBonus": 3
+            },
+            {
+                "type": "PrimeAbility",
+                "abilityKey": "INT",
+                "scoreBonus": 3
+            },
+            {
+                "type": "PrimeAbility",
+                "abilityKey": "CHA",
+                "scoreBonus": 3
+            },
+            {
+                "type": "CalculatedAbility",
+                "abilityKey": "TECH",
+                "scoreBonus": 2
+            }
+        ]
+    },
+    {
+        "name": "Mutant Human",
+        "baseWalkSpeed": 12,
+        "baseSwimSpeed": 3,
+        "baseArmorClass": 10,
+        "adjustments": [
+            {
+                "type": "CalculatedAbilityBonus",
+                "abilityKey": "HUAPPEAR",
+                "scoreBonus": -2
+            }
+        ]
+    },
+    {
+        "name": "Mutant Anthropomorphic Animal",
+        "adjustments": [
+            {
+                "type": "CalculatedAbilityBonus",
+                "abilityKey": "HUAPPEAR",
+                "scoreBonus": -6
+            },
+            {
+                "type": "CalculatedAbilityBonus",
+                "abilityKey": "MOVESILENTLY",
+                "scoreBonus": 2
+            }
+        ]
+    },
+    {
+        "name": "Intelligent Mutant Plant",
+        "baseWalkSpeed": 9,
+        "baseSwimSpeed": 3,
+        "baseArmorClass": 10,        
+        "adjustments": [
+            {
+                "type": "PrimeAbility",
+                "abilityKey": "CON",
+                "scoreBonus": 2
+            },            
+            {
+                "type": "CalculatedAbilityBonus",
+                "abilityKey": "HUAPPEAR",
+                "baseInitialScore": 0
+            },
+            {
+                "type": "CalculatedAbilityBonus",
+                "abilityKey": "HIDE",
+                "scoreBonus": 2
+            }
+        ]
+    }    
+]
