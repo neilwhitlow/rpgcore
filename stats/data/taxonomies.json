@@ -1,6 +1,7 @@
 [
     {
         "name": "Pure Human",
+        "abbreviation": "PSH",
         "baseWalkSpeed": 12,
         "baseSwimSpeed": 3,
         "baseArmorClass": 10,
@@ -29,6 +30,7 @@
     },
     {
         "name": "Mutant Human",
+        "abbreviation": "ALTH",
         "baseWalkSpeed": 12,
         "baseSwimSpeed": 3,
         "baseArmorClass": 10,
@@ -42,6 +44,7 @@
     },
     {
         "name": "Mutant Anthropomorphic Animal",
+        "abbreviation": "ANIMAL",
         "adjustments": [
             {
                 "type": "CalculatedAbilityBonus",
@@ -57,6 +60,7 @@
     },
     {
         "name": "Intelligent Mutant Plant",
+        "abbreviation": "PLANT",
         "baseWalkSpeed": 9,
         "baseSwimSpeed": 3,
         "baseArmorClass": 10,        
