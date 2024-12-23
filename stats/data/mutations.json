@@ -1,5 +1,5 @@
 {
-    "maxPhysicalRoll": 40,
+    "maxPhysicalRoll": 46,
     "maxPsychicRoll": 38,
     "physicalMutations": [
         {
@@ -244,7 +244,26 @@
             "refinements": [
                 "Gamma Radiation", "Electricity", "Laser", "Microwave Heat"
             ]
-        }          
+        },
+        {
+            "name": "Unusual Body Parts",
+            "rollChance": {
+                "from": 43,
+                "to": 46
+            },
+            "hasMutationStrength": false,
+            "adjustments": [
+                {
+                    "type": "CalculatedAbilityBonus",
+                    "abilityKey": "HUAPPEAR",
+                    "scoreBonus": -2
+                }
+            ],            
+            "refinedNameFormat": "%s - %s",
+            "refinements": [
+                "Tentacles", "Trunk", "Extra Eyes", "Tail", "Second Head", "Claws", "Fangs", "Pincers","Arm(s)", "Leg(s)", "Hand(s)", "Marsupial-style Pouch" 
+            ]
+        }                  
     ],
     "psychicMutations": [
         {
